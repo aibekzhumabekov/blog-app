@@ -6,4 +6,4 @@ const db = mongoose.connection;
 
 db.on('connected', function() {
     console.log(`DB connected to ${process.env.DATABASE_URL}`);
-} )
+});
