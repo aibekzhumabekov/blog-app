@@ -3,8 +3,8 @@ const Schema = mongoose.Schema;
 
 const postSchema = new Schema({
     title: String,
-    author: String,
-    Body: String
+    body: String,
+    author: String
 }, {
     timestamps: true
 });

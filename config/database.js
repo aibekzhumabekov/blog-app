@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
 
-mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true});
+mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true })
+mongoose.set('useCreateIndex', true);
 
 const db = mongoose.connection;
 
 db.on('connected', function() {
-    console.log(`DB connected to ${process.env.DATABASE_URL}`);
-});
+  console.log(`DB connected to ${process.env.DATABASE_URL}`);
+})
