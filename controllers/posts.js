@@ -2,7 +2,9 @@ const Post = require('../models/post');
 
 module.exports = {
   getAllPosts,
-  create
+  create,
+  deletePost,
+  editPost
 };
 
 function getAllPosts(req, res) {
@@ -20,3 +22,23 @@ function create(req, res) {
     res.status(200).json(post);
   })
 }
+
+function editPost(req,res){
+  console.log("In edit post function")
+  console.log(req.body)
+  Post.findByIdAndUpdate(req.params.id, req.body, {new: true}).then(function(post){
+      res.status(200).json(post)
+  })
+}
+
+function deletePost(req,res){
+  console.log(req.body)
+  console.log(req.params.id)
+  console.log("In delete Function")
+  
+  Post.findByIdAndDelete(req.params.id).then(function(post){
+      console.log(req.params.id)
+      res.status(200).json(post)
+  })
+}
+ 
