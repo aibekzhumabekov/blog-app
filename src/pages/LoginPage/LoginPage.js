@@ -21,7 +21,6 @@ class LoginPage extends Component {
       this.props.handleSignupOrLogin();
       this.props.history.push('/')
     } catch (err) {
-      // Invalid user data (probably duplicate email)
       this.props.updateMessage('Invalid Credentials');
     }
   }

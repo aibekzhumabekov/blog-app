@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { Switch, Route, Link } from 'react-router-dom';
 import userService from './utils/userService';
-import { getAllPosts, createPost } from './utils/postService';
+import { getAllPosts, createPost, editPost } from './utils/postService';
 import SignUpPage from './pages/SignUpPage/SignUpPage';
 import LoginPage from './pages/LoginPage/LoginPage';
 import PostContainer from './components/PostContainer';
+import { deletePost} from './utils/postService';
 import NavBar from "./components/navBar";
 import './App.css';
 
@@ -14,9 +15,9 @@ class App extends Component {
     newPost: {
       title: "",
       author: "",
-      body: "",
-      test: []
+      body: ""
     },
+    isEditing: false,
     user: userService.getUser()
   }
 
@@ -25,31 +26,69 @@ class App extends Component {
     this.setState({ posts });
   }
 
-  handleSubmit = (e) => {
-    e.preventDefault();
-    createPost(this.state.newPost);
+  handleDelete = async (id) => {
+    let deletedPost = await deletePost(id);    
+    let postsCopy = this.state.posts;
+    let posts = postsCopy.filter(post => post._id !== deletedPost._id)
+    
+    this.setState({ posts })
   }
+
+  handleEditSubmit = async (e, id) => {
+    e.preventDefault();
+
+    let postsCopy = this.state.posts;
+    let post = postsCopy.filter(post => post._id === id)[0]
+
+    await editPost(post);
+    let posts =  await getAllPosts();
+
+    this.setState({ posts })
+  }
+
+  handleEditChange = (e, idx) => {
+    let postsCopy = this.state.posts;
+    let postCopy = postsCopy[idx];
+
+    postCopy[e.target.name] = e.target.value;
+    
+    this.setState({ posts: postsCopy });
+  }
+
+  handleSubmit = async (e) => {
+    e.preventDefault();
+
+    let post = await createPost(this.state.newPost);
+    let postsCopy = this.state.posts;
+    postsCopy.push(post)
+
+    let clearedNewPost = {
+      title: "",
+      author: "",
+      body: ""
+    }
+
+    this.setState({ 
+      newPost: clearedNewPost,
+      posts: postsCopy
+    });
+  }
+
+  
+
 
   handleChange = (e) => {
     let newPost = { ...this.state.newPost }
-    console.log(this.state.newPost.test);
 
-    if (e.target.type !== "checkbox") {
-      newPost[e.target.name] = e.target.value;
-    } else {
-      if (e.target.checked) {
-        newPost.test.push(e.target.dataset.username)
-      } else {
-        newPost.test.filter(user => {
-          return !e.target.dataset.username
-        })
-      }
-    }
+    newPost[e.target.name] = e.target.value;
 
     this.setState({
       newPost
     })
   }
+
+
+  
 
   handleLogout = () => {
     userService.logout();
@@ -79,8 +118,9 @@ class App extends Component {
                 <li><Link to="" onClick={this.handleLogout}>Logout</Link></li>
               </ul>
             : <ul>
-                <li><Link to="/signup">Sign up</Link></li>
-                <li><Link to="/login">Login</Link></li>
+  
+                <label><Link to="/signup">Sign up</Link></label>
+                <label><Link to="/login">Login</Link></label>
               </ul>
           }
         </header>
@@ -137,7 +177,12 @@ class App extends Component {
         }
         { 
           this.state.posts.length
-          ? <PostContainer posts={this.state.posts} />
+          ? <PostContainer 
+              posts={this.state.posts} 
+              handleDelete={this.handleDelete} 
+              handleEditChange={this.handleEditChange}
+              handleEditSubmit={this.handleEditSubmit}
+            />
           : <h3 style={{ textAlign: 'center' }}>Loading...</h3>
         } 
       </div>

@@ -23,7 +23,6 @@ userSchema.pre('save', function(next) {
 
   bcrypt.hash(user.password, SALT_ROUNDS, function(err, hash) {
     if (err) return next(err);
-    // replace the user provided password with the hash
     user.password = hash;
     next();
   });

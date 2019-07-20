@@ -3,14 +3,12 @@ const router = express.Router();
 const postsController = require('../controllers/posts');
 
 router.get('/posts', postsController.getAllPosts);
-router.delete('/:id/delete', postsController.delete);
+router.put('/posts/:id/edit', postsController.editPost);
+router.delete('/posts/deletePost/:id', postsController.deletePost);
 
-// Protected Route
 router.use(require('../config/auth'));
 router.post('/posts', checkAuth, postsController.create);
 
-
-// Helper Function
 function checkAuth(req, res, next) {
   if (req.user) return next();
   console.log('in the checkAuth function');

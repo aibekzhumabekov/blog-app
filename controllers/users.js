@@ -36,7 +36,6 @@ async function login(req, res) {
   }
 }
 
-// Helper Function Below
 function createJWT(user) {
   return jwt.sign(
     { user },

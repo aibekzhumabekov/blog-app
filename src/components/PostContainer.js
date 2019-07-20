@@ -8,10 +8,20 @@ const postContainerStyles = {
 }
 
 class PostContainer extends Component {
+    
+    
   render() {
     let postList = this.props.posts.map((post, idx) => (
-      <Post key={idx} {...post} />
+        <Post 
+            key={idx} 
+            idx={idx} 
+            {...post} 
+            handleDelete={this.props.handleDelete}  
+            handleEditChange={this.props.handleEditChange}
+            handleEditSubmit={this.props.handleEditSubmit}
+        />
     ));
+
 
     return (
       <div 
